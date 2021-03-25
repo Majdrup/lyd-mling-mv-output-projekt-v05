@@ -1,124 +1,227 @@
-function Tidlarm () {
-    if (db85 >= 1800000 || (db90 >= 1200000 || (db95 >= 600000 || db100 >= 300000))) {
-        // antal millisekunder for 15 min
-        basic.showIcon(IconNames.No)
+input.onButtonPressed(Button.A, function () {
+    serial.writeNumbers(mVdB)
+})
+function MV_list () {
+    // pt skal have lave denne om til et map, der er ikke behov for at hente dB værdierne fra dB tuple
+    if (volt < 0.2) {
+        mVdB[0] += input.runningTime()
+    } else if (volt >= 0.2 && volt < 0.26) {
+        mVdB[1] += input.runningTime()
+    } else if (volt >= 0.26 && volt < 0.38) {
+        mVdB[2] += input.runningTime()
+    } else if (volt >= 0.38 && volt < 0.92) {
+        mVdB[3] += input.runningTime()
+mVdB[3] += input.runningTime()
+    } else if (volt >= 0.92 && volt < 1.5) {
+        mVdB[4] += input.runningTime()
+    } else if (volt >= 1.5 && volt < 2.4) {
+        mVdB[5] += input.runningTime()
+    } else if (volt >= 2.4 && volt < 3.2) {
+        mVdB[6] += input.runningTime()
+    } else if (volt >= 3.2 && volt < 6) {
+        mVdB[7] += input.runningTime()
+    } else if (volt >= 6 && volt < 10) {
+        mVdB[8] += input.runningTime()
+    } else if (volt >= 10 && volt < 15) {
+        mVdB[9] += input.runningTime()
+    } else if (volt >= 15 && volt < 225) {
+        mVdB[10] += input.runningTime() + mVdB[9]
+    } else if (volt >= 225 && volt < 360) {
+        mVdB[11] += input.runningTime() + mVdB[10]
+    } else if (volt >= 360 && volt < 640) {
+        mVdB[12] += input.runningTime() + mVdB[11]
+    } else {
+    	
+    }
+    return mVdB
+}
+function mV3 () {
+    volt = pins.analogReadPin(AnalogPin.P0) * 2.465119152
+    return volt
+}
+function Gultid () {
+    // Ændres til at referere til mVdB listen
+    if (mVdB[9] >= 216 * 60000 || mVdB[10] >= 60 * 60000 || mVdB[11] >= 18 * 60000 || mVdB[12] >= 6 * 60000 || mVdB[13] >= 20000) {
+        music.setVolume(86)
+        // antal millisekunder for 15 min, alternativ kan der skrives x= antal min. (x * 60000)
+        for (let index = 0; index < 4; index++) {
+            basic.showLeds(`
+                . # # # .
+                . # # # .
+                # # # # #
+                . # # # .
+                . . # . .
+                `)
+            basic.pause(500)
+            basic.showIcon(IconNames.No)
+            basic.pause(500)
+        }
     } else {
         basic.showIcon(IconNames.Yes)
     }
 }
-input.onButtonPressed(Button.A, function () {
-    music.setVolume(music.volume() + 10)
-    basic.showIcon(IconNames.No)
+input.onButtonPressed(Button.B, function () {
+    control.reset()
 })
-function dB_monitor () {
-    serial.writeValue("db65", db65)
-    serial.writeValue("db70", db70)
-    serial.writeValue("db75", db75)
-    serial.writeValue("db80", db80)
-    serial.writeValue("db85", db85)
-    serial.writeValue("db90", db90)
-    serial.writeValue("db95", db95)
-    serial.writeValue("db100", db100)
+function MVmap () {
+    // pt skal have lave denne om til et map, der er ikke behov for at hente dB værdierne fra dB tuple
+    if (lyd < 0.2) {
+        lyd = pins.map(
+        dB,
+        0,
+        0.2,
+        10,
+        40
+        )
+        mVdB[0] = mVdB[0 + input.runningTime()]
+    } else if (lyd >= 0.2 && lyd < 0.26) {
+        lyd = pins.map(
+        dB,
+        0.2,
+        0.26,
+        40,
+        45
+        )
+        mVdB[1] = mVdB[1 + input.runningTime()]
+    } else if (lyd >= 0.26 && volt < 0.38) {
+        lyd = pins.map(
+        dB,
+        0.26,
+        0.38,
+        45,
+        50
+        )
+        mVdB[2] += input.runningTime()
+    } else if (lyd >= 0.38 && volt < 0.92) {
+        lyd = pins.map(
+        dB,
+        0.38,
+        0.92,
+        50,
+        55
+        )
+        mVdB[3] += input.runningTime()
+    } else if (lyd >= 0.92 && volt < 1.5) {
+        lyd = pins.map(
+        dB,
+        0.92,
+        1.5,
+        55,
+        60
+        )
+        mVdB[4] += input.runningTime()
+    } else if (lyd >= 1.5 && volt < 2.4) {
+        lyd = pins.map(
+        dB,
+        1.5,
+        2.4,
+        60,
+        65
+        )
+        mVdB[5] += input.runningTime()
+    } else if (lyd >= 2.4 && volt < 3.2) {
+        lyd = pins.map(
+        dB,
+        2.4,
+        3.2,
+        65,
+        70
+        )
+        mVdB[6] += input.runningTime()
+    } else if (lyd >= 3.2 && volt < 6) {
+        lyd = pins.map(
+        dB,
+        3.2,
+        6,
+        70,
+        75
+        )
+        mVdB[7] += input.runningTime()
+    } else if (lyd >= 6 && volt < 10) {
+        lyd = pins.map(
+        dB,
+        6,
+        10,
+        75,
+        80
+        )
+        mVdB[8] += input.runningTime()
+    } else if (lyd >= 10 && volt < 15) {
+        lyd = pins.map(
+        dB,
+        10,
+        15,
+        80,
+        85
+        )
+        mVdB[9] += input.runningTime()
+    } else if (lyd >= 15 && volt < 225) {
+        lyd = pins.map(
+        dB,
+        15,
+        225,
+        85,
+        90
+        )
+        mVdB[10] += input.runningTime() + mVdB[9]
+    } else if (lyd >= 225 && volt < 360) {
+        lyd = pins.map(
+        dB,
+        225,
+        360,
+        90,
+        95
+        )
+        mVdB[11] += input.runningTime() + mVdB[10]
+    } else if (lyd >= 360 && volt < 640) {
+        lyd = pins.map(
+        dB,
+        360,
+        640,
+        95,
+        100
+        )
+        mVdB[12] += input.runningTime() + mVdB[11]
+    }
+    return mVdB
 }
-function mV3 () {
-    volt = pins.analogReadPin(AnalogPin.P2) * 2.465119152
+function Gns_volt () {
+    voltage = 0
+    for (let index = 0; index < 100; index++) {
+        voltage += pins.analogReadPin(AnalogPin.P0)
+    }
+    volt = voltage / 100
+    lyd = volt * 2.465119152
+    return Math.round(lyd)
 }
-function Live_mV_input () {
-    if (volt < 0.2) {
-        db = 40
-    } else if (volt >= 0.2 && volt < 0.26) {
-        db = 45
-    } else if (volt >= 0.26 && volt < 0.38) {
-        db = 50
-    } else if (volt >= 0.38 && volt < 0.92) {
-        db = 55
-    } else if (volt >= 0.92 && volt < 1.5) {
-        db = 60
-    } else if (volt >= 1.5 && volt < 2.4) {
-        db = 65
-        db65 += input.runningTime()
-    } else if (volt >= 2.4 && volt < 3.2) {
-        db = 70
-        db70 += input.runningTime()
-    } else if (volt >= 3.2 && volt < 6) {
-        db = 75
-        db75 += input.runningTime()
-        if (db > db1) {
-            db1 = db
+function Redtid () {
+    if (mVdB[10] >= 168 * 60000 || mVdB[11] >= 60 * 60000 || mVdB[12] >= 16 * 60000 || mVdB[13] >= 5 * 60000) {
+        music.setVolume(0)
+        for (let index = 0; index < 10; index++) {
+            basic.showLeds(`
+                # # # # #
+                # # # # #
+                # # # # #
+                # # # # #
+                # # # # #
+                `)
+            basic.pause(500)
+            basic.showIcon(IconNames.No)
+            basic.pause(500)
         }
-    } else if (volt >= 6 && volt < 10) {
-        db = 80
-        db80 += input.runningTime()
-        if (db > db1) {
-            db1 = db
-        }
-    } else if (volt >= 10 && volt < 15) {
-        db = 85
-        db85 += input.runningTime()
-        if (db > db1) {
-            db1 = db
-        }
-    } else if (volt >= 15 && volt < 225) {
-        db = 90
-        db90 = db85 + input.runningTime()
-        if (db > db1) {
-            db1 = db
-        }
-    } else if (volt >= 225 && volt < 360) {
-        db = 95
-        db95 = db90 + input.runningTime()
-        if (db > db1) {
-            db1 = db
-        }
-    } else if (volt >= 360 && volt < 640) {
-        db = 100
-        db100 = db95 + input.runningTime()
-        if (db > db1) {
-            db1 = db
-        }
-    } else {
-    	
     }
 }
-input.onButtonPressed(Button.B, function () {
-    music.setVolume(music.volume() - 10)
-    basic.showIcon(IconNames.Yes)
-})
-function DB_values () {
-    mv = 0
-    db75 = 0
-    db80 = 0
-    db100 = 0
-    db95 = 0
-    db90 = 0
-    db85 = 0
-    db1 = 0
-    db = 0
-    volt = 0
-    list85 = [db85]
-    list90 = [db90]
-}
-let list90: number[] = []
-let list85: number[] = []
-let mv = 0
-let db1 = 0
-let db = 0
+let voltage = 0
+let dB = 0
+let lyd = 0
 let volt = 0
-let db80 = 0
-let db75 = 0
-let db70 = 0
-let db65 = 0
-let db100 = 0
-let db95 = 0
-let db90 = 0
-let db85 = 0
-DB_values()
-music.setVolume(127)
+let mVdB : number[] = []
+mVdB = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 basic.forever(function () {
-    mV3()
-    Live_mV_input()
-    Tidlarm()
-    serial.writeValue("volt", volt)
-    dB_monitor()
-    music.ringTone(volt)
+    Gns_volt()
+    MVmap()
+    Gultid()
+    Redtid()
+    serial.writeValue("dB_lyd", lyd)
+    serial.writeValue("dB_value", dB)
 })
